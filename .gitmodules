@@ -1,0 +1,20 @@
+[submodule "libraries/hump"]
+	path = libraries/hump
+	url = git@github.com:vrld/hump.git
+  ignore = dirty
+[submodule "libraries/anim8"]
+	path = libraries/anim8
+	url = git@github.com:kikito/anim8.git
+  ignore = dirty
+[submodule "libraries/windfield"]
+	path = libraries/windfield
+	url = git@github.com:a327ex/windfield.git
+  ignore = dirty
+[submodule "libraries/Simple-Tiled-Implementation"]
+	path = libraries/Simple-Tiled-Implementation
+	url = git@github.com:karai17/Simple-Tiled-Implementation.git
+  ignore = dirty
+[submodule "libraries/baton"]
+	path = libraries/baton
+	url = git@github.com:tesselode/baton.git
+  ignore = dirty

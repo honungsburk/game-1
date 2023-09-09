@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lua-local",
+      "request": "launch",
+      "name": "Debug Löve",
+      "program": {
+        "command": "/Applications/love.app/Contents/MacOS/love"
+      },
+      "args": ["${workspaceFolder}/src", "vsc_debug"]
+    }
+  ]
+}

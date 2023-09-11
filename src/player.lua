@@ -1,5 +1,6 @@
 local sheet = Sprites.playerSheet
-local grid = anim8.newGrid(16, 16, sheet:getWidth(), sheet:getHeight())
+local spriteSize = 16
+local grid = anim8.newGrid(spriteSize, spriteSize, sheet:getWidth(), sheet:getHeight())
 
 local animations = {}
 -- First parameter: columns, second parameter: which row
@@ -26,7 +27,7 @@ animations.idle.up_right = anim8.newAnimation(grid(1, 6), 1)
 animations.idle.right = anim8.newAnimation(grid(1, 7), 1)
 animations.idle.down_right = anim8.newAnimation(grid(1, 8), 1)
 
-function pickDirection(animations, angle)
+local function pickDirection(animations, angle)
   -- 0 radians is right
   -- pi/2 radians is down
   -- pi radians is left
@@ -63,39 +64,39 @@ function Player:new(params)
 
   -- Create a dynamic player body in world
   o.body = world:newRectangleCollider(
-    360,
-    100,
-    params.scale * 16,
-    params.scale * 16,
+    params.x or 0,
+    params.y or 0,
+    params.scale * spriteSize,
+    params.scale * spriteSize,
     { collision_class = 'Player' })
   o.body:setFixedRotation(true)
-  -- o.body:setMass(10)
-  -- o.body:setLinearDamping(10)
-  -- o.body:setAngularDamping(10)
 
   o.speed = params.speed or 240
   o.rotation = 0
   o.direction = 0
   o.animation = animations.idle.down
-  o.body:setPosition(params.x or 0, params.y or 0)
   o.body:setMass(1)
   o.scale = params.scale or 1
 
   return o
 end
 
+function Player:getPosition()
+  return self.body:getPosition()
+end
+
 function Player:draw()
-  if player.body then
+  if self.body then
     -- Draw the player
-    player.animation:draw(
+    self.animation:draw(
       sheet,
       self.body:getX(),
       self.body:getY(),
       nil,
       self.scale,
       self.scale,
-      16 / 2,
-      16 / 2)
+      spriteSize / 2,
+      spriteSize / 2)
   end
 end
 
@@ -103,12 +104,6 @@ function Player:update(dt, input)
   local delta = vector(0, 0)
 
   -- Velocity
-  local x, y = input:get('move')
-  if (x ~= 0 or y ~= 0) then
-    print("x:" .. x .. " y:" .. y)
-  end
-
-
   if input:down('left') then
     delta.x = -1
   elseif input:down('right') then
@@ -149,27 +144,5 @@ function Player:update(dt, input)
 
   self.animation = pickDirection(animation, self.direction)
 
-  -- Get the player's current velocity
-  -- local vx, vy = self.body:getLinearVelocity()
-
-  -- -- Set the player's velocity
-  -- local newVx, newVy = 0, 0
-
-  -- if love.keyboard.isDown("w") then
-  --   self.body:setLinearVelocity(self.speed, 0)
-  --   self.direction = "right"
-  -- elseif love.keyboard.isDown("left") then
-  --   self.body:setLinearVelocity(-self.speed, 0)
-  --   self.direction = "left"
-  -- else
-  --   self.body:setLinearVelocity(0, vy)
-  -- end
-
-  -- -- Set the player's rotation
-  -- if self.direction == "right" then
-  --   self.rotation = math.atan2(vy, vx)
-  -- else
-  --   self.rotation = math.atan2(vy, vx) + math.pi
-  -- end
   player.animation:update(dt)
 end

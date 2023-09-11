@@ -1,5 +1,11 @@
 if arg[#arg] == "vsc_debug" then require("lldebugger").start() end
 
+local function loadSheet(name)
+  local sheet = love.graphics.newImage('sprites/' .. name .. '.png')
+  sheet:setFilter("nearest", "nearest")
+  return sheet
+end
+
 function love.load()
   -- Set the window title
   love.window.setTitle("Reverse Tower Defense")
@@ -22,8 +28,9 @@ function love.load()
   Sprite_Scale = 4
 
   Sprites = {}
-  Sprites.playerSheet = love.graphics.newImage('sprites/player-sheet.png')
-  Sprites.playerSheet:setFilter("nearest", "nearest")
+  Sprites.playerSheet = loadSheet('player-sheet')
+  Sprites.skeletonSwordmanSheet = loadSheet('skeleton-swordman')
+  Sprites.graveSheet = loadSheet('grave')
 
   -- Create a world with 0 gravity in both x and y direction
   world = wf.newWorld(0, 0, false)
@@ -34,12 +41,20 @@ function love.load()
   -- Load files
   require('src/player')
   require('src/input')
+  require('src/grave')
+  require('src/skeleton')
 
   -- create input
   input = createInput()
 
   -- Create player
   player = Player:new({ x = 360, y = 100, speed = 200000, scale = Sprite_Scale })
+
+  -- Create Grave
+  grave = Grave:new({ x = 200, y = 200, scale = Sprite_Scale })
+
+  -- Skeletons
+  skeletons = {}
 end
 
 --[[ The main game loop
@@ -51,7 +66,15 @@ end
 function love.update(dt)
   input:update()
   world:update(dt)
+  grave:update(dt)
   player:update(dt, input)
+  if grave:canSpawn(player) then
+    table.insert(skeletons, grave:spawn({ scale = 2 }))
+  end
+
+  for i, skeleton in ipairs(skeletons) do
+    skeleton:update(dt)
+  end
 end
 
 --[[
@@ -59,8 +82,12 @@ end
   - runs every frame
   ]]
 function love.draw()
-  player:draw()
+  cam:attach()
   world:draw()
-  -- cam:attach()
-  -- cam:detach()
+  grave:draw()
+  for i, skeleton in ipairs(skeletons) do
+    skeleton:draw()
+  end
+  player:draw()
+  cam:detach()
 end

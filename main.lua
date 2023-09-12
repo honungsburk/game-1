@@ -43,6 +43,7 @@ function love.load()
   require('src/input')
   require('src/grave')
   require('src/skeleton')
+  require('src/movement')
 
   -- create input
   input = createInput()
@@ -69,7 +70,7 @@ function love.update(dt)
   grave:update(dt)
   player:update(dt, input)
   if grave:canSpawn(player) then
-    table.insert(skeletons, grave:spawn({ scale = 2 }))
+    table.insert(skeletons, grave:spawn({ scale = 2, movement = Movement.right }))
   end
 
   for i, skeleton in ipairs(skeletons) do

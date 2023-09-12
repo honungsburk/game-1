@@ -60,5 +60,10 @@ function Grave:spawn(options)
   local randomX = self.x + math.random(100) - 50
   local randomY = self.y + math.random(100) - 50
   self.spawnTimer = self.maxSpawnTime
-  return Skeleton:new({ x = randomX, y = randomY, scale = options.scale or self.scale })
+  return Skeleton:new({
+    x = randomX,
+    y = randomY,
+    scale = options.scale or self.scale,
+    movement = options.movement or Movement.idle
+  })
 end

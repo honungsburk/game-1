@@ -9,6 +9,8 @@ animations.idle = anim8.newAnimation(grid(1, 1), 1)
 
 Skeleton = {}
 
+
+
 function Skeleton:new(params)
   local o = {}
   setmetatable(o, self)
@@ -22,8 +24,14 @@ function Skeleton:new(params)
   o.rotation = 0
   o.scale = params.scale or 1
   o.animation = animations.idle
+  o.speed = params.speed or 100
+  o.movement = params.movement or Movement.idle
 
   return o
+end
+
+function Skeleton:setMovement(movement)
+  self.movement = movement
 end
 
 function Skeleton:draw()
@@ -31,7 +39,7 @@ function Skeleton:draw()
   self.animation:draw(
     sheet,
     self.x,
-    self.x,
+    self.y,
     nil,
     self.scale,
     self.scale,
@@ -41,4 +49,8 @@ end
 
 function Skeleton:update(dt)
   self.animation:update(dt)
+
+  local direction = self.movement(vector(self.x, self.y)):normalizeInplace()
+  self.x = self.x + direction.x * dt * self.speed
+  self.y = self.y + direction.y * dt * self.speed
 end
